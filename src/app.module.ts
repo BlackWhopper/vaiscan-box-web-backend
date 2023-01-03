@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { StorageModule } from './storage/storage.module';
-import { FileList } from './storage/entity/file.entity';
+import { FileList } from './storage/entity/file.entity'
 
 @Module({
   imports: [
@@ -14,8 +14,8 @@ import { FileList } from './storage/entity/file.entity';
       username: 'blackwhopper',
       password: 'qjrjzld@',
       database: 'vaiscan',
-      entities: [FileList],
-      synchronize: true,
+      entities: [ FileList ],
+      synchronize: true
     }),
     StorageModule],
   controllers: [AppController],
