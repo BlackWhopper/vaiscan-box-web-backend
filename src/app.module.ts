@@ -3,21 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { StorageModule } from './storage/storage.module';
-import { FileList } from './storage/entity/file.entity'
+import { mariadbORMConfig } from './configs/typeorm.config';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mariadb',
-      host: '3.35.205.173',
-      port: 3306,
-      username: 'blackwhopper',
-      password: 'qjrjzld@',
-      database: 'vaiscan',
-      entities: [ FileList ],
-      synchronize: true
-    }),
-    StorageModule],
+    TypeOrmModule.forRoot(mariadbORMConfig),
+    StorageModule,
+    UploadModule],
   controllers: [AppController],
   providers: [AppService],
 })
