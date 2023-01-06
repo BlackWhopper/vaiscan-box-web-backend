@@ -1,28 +1,23 @@
 import { aIServer } from './../configs/socket.config';
 import { createHash } from 'crypto';
 import { Injectable } from '@nestjs/common';
-import WebSocket, { WebSocketServer } from 'ws';
+import { io } from 'socket.io-client';
 
 @Injectable()
 export class UploadService {
-    async getHash(file: Express.Multer.File): Promise<string>{
-        const shasum = createHash('sha256');
+    getHash(file: Express.Multer.File): string{
+        const shaSum = createHash('sha256');
         const buffer = file.buffer;
     
-        shasum.update(buffer);
-        const hashed = await shasum.digest('hex');
+        shaSum.update(buffer);
+        const hashed = shaSum.digest('hex');
 
         return hashed;
     }
 
     staticFileTransfer(file: Express.Multer.File) {
-        const ws = new WebSocket(aIServer.staticServer);
-        ws.on('open', function open() {
-            ws.send('START');
-        });
-        ws.on('message', function message() {
-            ws.send(file.filename);
-        });
+        const socket = io(aIServer.staticServer);
+        socket.emit('test');
     }
     
 }

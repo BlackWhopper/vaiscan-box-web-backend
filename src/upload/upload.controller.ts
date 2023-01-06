@@ -9,6 +9,7 @@ export class UploadController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('fieldName'))
   uploadFile(@UploadedFile() file: Express.Multer.File, ) {
-    
+    console.log(file);
+    this.uploadService.staticFileTransfer(file);
   }
 }
