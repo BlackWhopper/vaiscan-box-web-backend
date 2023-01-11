@@ -1,15 +1,21 @@
 import { UploadService } from './upload.service';
-import { Controller, Post, UseInterceptors, UploadedFile, ParseFilePipe } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, ParseFilePipe, Get, Redirect, HttpStatus, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
+  
+  @Get()
+  getUploadPage() {
+    return 'upload page';
+  }
 
-  @Post('upload')
+  @Post()
+  @Redirect('')
   @UseInterceptors(FileInterceptor('fieldName'))
-  uploadFile(@UploadedFile() file: Express.Multer.File, ) {
-    console.log(file);
-    this.uploadService.staticFileTransfer(file);
+  async uploadFile(@UploadedFile() file: Express.Multer.File,) {
+    const hash = await this.uploadService.uploadFile(file);
+   return { "url": `file/${hash}`, "statusCode": HttpStatus.MOVED_PERMANENTLY}; //왜 POST로 요청이 가는거야!!!
   }
 }
