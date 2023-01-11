@@ -33,6 +33,6 @@ export class FileList {
   hash: string;
 
   @Column()
-  user_id: string;
+  user_id: number;
 
 }

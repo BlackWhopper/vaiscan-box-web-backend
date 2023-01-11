@@ -1,0 +1,10 @@
+server:
+  port: 3000
+
+mariadb:
+  type: 'mariadb'
+  port: 3306
+  database: 'vaiscan'
+
+jwt:
+  expriesIn: 3600

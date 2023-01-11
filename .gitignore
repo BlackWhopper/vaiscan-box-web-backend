@@ -35,4 +35,4 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # Secure File
-/src/configs/*
+#/config
