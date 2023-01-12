@@ -8,3 +8,7 @@ mariadb:
 
 jwt:
   expiresIn: 3600
+
+ai:
+  static: 'ws://localhost:8080'
+  dynamic: 'ws://localhost:8080'

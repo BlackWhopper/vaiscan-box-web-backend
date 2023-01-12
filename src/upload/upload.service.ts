@@ -1,5 +1,4 @@
 import { UploadRepository } from './upload.repository';
-import { aIServer } from './../configs/socket.config';
 import { createHash } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { io } from 'socket.io-client';
