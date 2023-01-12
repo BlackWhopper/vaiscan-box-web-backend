@@ -1,3 +1,4 @@
+import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -11,7 +12,9 @@ import { FileModule } from './file/file.module';
     TypeOrmModule.forRoot(mariadbORMConfig),
     StorageModule,
     UploadModule,
-    FileModule],
+    FileModule,
+    AuthModule,
+  ],
   controllers: [AppController],
 })
 export class AppModule {}

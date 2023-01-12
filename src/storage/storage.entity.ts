@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class FileList {
+export class Storage {
   @PrimaryGeneratedColumn()
   file_id: number;
 
@@ -23,10 +23,10 @@ export class FileList {
   @Column('datetime')
   upload_time: number;
 
-  @Column('tinyint', {default: 0})
+  @Column('tinyint', { default: 0 })
   dynamic_status: number;
 
-  @Column('tinyint', {default: 0})
+  @Column('tinyint', { default: 0 })
   static_status: number;
 
   @Column('varchar')
@@ -34,5 +34,4 @@ export class FileList {
 
   @Column()
   user_id: number;
-
 }

@@ -1,13 +1,15 @@
-import { Controller, Get, Query, Redirect } from '@nestjs/common';
+import { Controller, Get, Query, Redirect, Req } from '@nestjs/common';
+import { Request } from 'express';
 
 @Controller()
 export class AppController {
-
   @Get()
   @Redirect('')
-  getHello() {
-    if(1===1) {
-      return { url: 'storage'}
+  getHello(@Req() req: Request) {
+    if (req.cookies['Authentication'] === undefined) {
+      return { url: 'upload' };
+    } else {
+      return { url: 'storage' };
     }
   }
 }
