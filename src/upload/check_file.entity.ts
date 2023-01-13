@@ -8,9 +8,9 @@ export class CheckFile {
   @Column()
   hash: string;
 
-  @Column('datetime', {default:() => 'CURRENT_TIMESTAMP'})
-  check_time: number;
+  @Column('datetime', { default: () => 'CURRENT_TIMESTAMP' })
+  check_time: string;
 
-  @Column('datetime', {default:() => 'CURRENT_TIMESTAMP'})
-  last_check_time: number;
+  @Column('datetime', { default: () => 'CURRENT_TIMESTAMP' })
+  last_check_time: string;
 }

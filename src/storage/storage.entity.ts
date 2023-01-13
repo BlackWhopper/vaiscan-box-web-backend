@@ -21,7 +21,7 @@ export class Storage {
   path: string;
 
   @Column('datetime')
-  upload_time: number;
+  upload_time: string;
 
   @Column('tinyint', { default: 0 })
   dynamic_status: number;

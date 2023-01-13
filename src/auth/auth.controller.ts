@@ -4,12 +4,15 @@ import {
   Controller,
   Post,
   Redirect,
+  Req,
   Res,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthCredentialsDto, AuthCreateDto } from './dto/auth.dto';
 import express, { Request, Response, NextFunction } from 'express';
 import * as config from 'config';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {

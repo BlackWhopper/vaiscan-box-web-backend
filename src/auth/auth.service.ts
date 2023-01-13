@@ -23,6 +23,7 @@ export class AuthService {
 
     if (user && (await bcrypt.compare(password, user.password))) {
       // 유저 토큰 생성 (Secret + Payload)
+      this.userRepository.updateLoginTime(user);
       const payload = { username };
       const accessToken = await this.jwtService.sign(payload);
       return { accessToken };

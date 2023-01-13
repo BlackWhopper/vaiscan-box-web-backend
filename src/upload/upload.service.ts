@@ -24,12 +24,13 @@ export class UploadService {
   // }
 
   async uploadFile(file: Express.Multer.File) {
-    const hashSum = this.getHash(file);
-    const fileInfo = await this.uploadRepository.getDataByHash(hashSum);
+    const hash = this.getHash(file);
+    const fileInfo = await this.uploadRepository.findOneBy({ hash });
     if (!fileInfo) {
-      this.uploadRepository.insertFile(hashSum);
+      this.uploadRepository.insertFile(hash);
       // 파일 전송
     } else {
+      this.uploadRepository.updateCheckTime(fileInfo);
       return fileInfo.hash;
     }
   }
