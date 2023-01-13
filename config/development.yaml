@@ -1,5 +1,5 @@
 mariadb:
-  host: '3.35.205.173'
+  host: '13.125.230.113'
   username: 'blackwhopper'
   password: 'qjrjzld@'
   synchronize: true

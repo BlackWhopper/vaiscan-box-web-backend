@@ -11,6 +11,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { isArray } from 'class-validator';
 
 @Controller('upload')
 export class UploadController {
@@ -23,9 +24,9 @@ export class UploadController {
 
   @Post()
   @Redirect('')
-  @UseInterceptors(FileInterceptor('fieldName'))
+  @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const hash = await this.uploadService.uploadFile(file);
-    return { url: `file/${hash}` };
+    const url = await this.uploadService.uploadFile(file);
+    return { url };
   }
 }

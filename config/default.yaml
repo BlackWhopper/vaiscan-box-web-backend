@@ -10,5 +10,5 @@ jwt:
   expiresIn: 3600
 
 ai:
-  static: 'ws://localhost:8080'
-  dynamic: 'ws://localhost:8080'
+  static: 'ws://13.125.230.113:8282'
+  dynamic: 'ws://13.125.230.113:8282'
