@@ -9,6 +9,6 @@ import { UploadService } from './upload.service';
   imports: [TypeOrmModule.forFeature([CheckFile])],
   exports: [UploadService],
   controllers: [UploadController],
-  providers: [UploadService, UploadRepository]
+  providers: [UploadService, UploadRepository],
 })
 export class UploadModule {}

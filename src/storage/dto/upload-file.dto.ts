@@ -4,5 +4,5 @@ export class FileUploadDto {
   file_type: string;
   size: number;
   path: string;
-  user_id: string;
+  user_id: number;
 }
