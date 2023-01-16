@@ -1,7 +1,21 @@
+import { FileTypePathDto } from './dto/upload-file.dto';
 import { StorageService } from './storage.service';
-import { Controller, Param, Req, UseGuards } from '@nestjs/common';
-import { Get } from '@nestjs/common/decorators/http/request-mapping.decorator';
+import {
+  Body,
+  Controller,
+  Param,
+  Redirect,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import {
+  Get,
+  Post,
+} from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('storage')
 @UseGuards(AuthGuard())
@@ -16,5 +30,15 @@ export class StorageController {
   @Get(':path')
   getSubFileList(@Req() req, @Param('path') path: string) {
     return this.storageService.getSubFileList(req.user.id, path);
+  }
+  @Post()
+  //@Redirect('')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFileInStorage(
+    @Req() req,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() fileTypePathDto: FileTypePathDto,
+  ) {
+    this.storageService.uploadFileInStorage(req.user.id, file, fileTypePathDto);
   }
 }

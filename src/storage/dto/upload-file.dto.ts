@@ -1,8 +1,4 @@
-export class FileUploadDto {
-  file_name: string;
-  original_name: string;
-  file_type: string;
-  size: number;
+export class FileTypePathDto {
+  type: string;
   path: string;
-  user_id: number;
 }
