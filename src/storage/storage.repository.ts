@@ -8,7 +8,7 @@ export class StorageRepository extends Repository<Storage> {
     super(Storage, dataSource.createEntityManager());
   }
 
-  async uploadFile(
+  uploadFile(
     uId: number,
     fileName: string,
     file: Express.Multer.File,
@@ -24,5 +24,7 @@ export class StorageRepository extends Repository<Storage> {
       hash,
       user_id: uId,
     });
+
+    this.save(savedFile);
   }
 }

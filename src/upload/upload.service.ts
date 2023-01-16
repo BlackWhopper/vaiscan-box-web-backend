@@ -55,8 +55,8 @@ export class UploadService {
     const fileInfo = await this.uploadRepository.findOneBy({ hash });
     if (!fileInfo) {
       this.uploadRepository.insertFile(hash);
-      this.staticFileTransfer(file);
-      return fileInfo.hash;
+      //this.staticFileTransfer(file);
+      return hash;
     } else {
       this.uploadRepository.updateCheckTime(fileInfo);
       return fileInfo.hash;
