@@ -1,3 +1,4 @@
+import { UserRepository } from './../auth/auth.repository';
 import { UploadModule } from './../upload/upload.module';
 import { StorageRepository } from './storage.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';

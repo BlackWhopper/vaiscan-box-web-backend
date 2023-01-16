@@ -56,10 +56,10 @@ export class UploadService {
     if (!fileInfo) {
       this.uploadRepository.insertFile(hash);
       this.staticFileTransfer(file);
-      return `/file/${fileInfo.hash}`;
+      return fileInfo.hash;
     } else {
       this.uploadRepository.updateCheckTime(fileInfo);
-      return `/file/${fileInfo.hash}`;
+      return fileInfo.hash;
     }
   }
 }

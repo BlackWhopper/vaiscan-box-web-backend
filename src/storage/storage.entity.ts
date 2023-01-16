@@ -20,7 +20,7 @@ export class Storage {
   @Column()
   path: string;
 
-  @Column('datetime')
+  @Column('datetime', { default: () => 'CURRENT_TIMESTAMP' })
   upload_time: string;
 
   @Column('tinyint', { default: 0 })

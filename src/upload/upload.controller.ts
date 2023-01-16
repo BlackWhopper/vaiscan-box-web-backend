@@ -26,7 +26,7 @@ export class UploadController {
   @Redirect('')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const url = await this.uploadService.uploadFile(file);
-    return { url };
+    const hash = await this.uploadService.uploadFile(file);
+    return { url: `file/${hash}` };
   }
 }
