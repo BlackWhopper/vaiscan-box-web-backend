@@ -3,6 +3,7 @@ import { UserRepository } from './../auth/auth.repository';
 import { FileTypePathDto } from './dto/upload-file.dto';
 import { StorageRepository } from './storage.repository';
 import { Injectable } from '@nestjs/common';
+import { S3 } from '@aws-sdk/client-s3';
 import * as fs from 'fs';
 
 @Injectable()
@@ -39,4 +40,11 @@ export class StorageService {
       if (err) throw err;
     });
   }
+
+  uploadAwsS3(
+    file: Express.Multer.File,
+    userName: string,
+    fileName: string,
+    path: string,
+  ) {}
 }
