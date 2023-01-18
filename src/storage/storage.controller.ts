@@ -31,7 +31,7 @@ export class StorageController {
   getSubFileList(@Req() req, @Param('path') path: string) {
     return this.storageService.getSubFileList(req.user.id, path);
   }
-  @Post()
+  @Post('upload')
   //@Redirect('')
   @UseInterceptors(FileInterceptor('file'))
   uploadFileInStorage(
