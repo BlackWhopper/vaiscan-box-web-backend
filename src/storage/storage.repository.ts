@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Storage } from './storage.entity';
+import { S3 } from '@aws-sdk/client-s3';
+import * as config from 'config';
+
+const aws = config.get('aws');
 
 @Injectable()
 export class StorageRepository extends Repository<Storage> {
@@ -27,4 +31,10 @@ export class StorageRepository extends Repository<Storage> {
 
     this.save(savedFile);
   }
+}
+
+@Injectable()
+export class AwsRepository {
+  private region = process.env.AWS_REGION || aws.region;
+  private s3 = new S3({ region: this.region });
 }
