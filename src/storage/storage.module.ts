@@ -1,6 +1,6 @@
 import { UserRepository } from './../auth/auth.repository';
 import { UploadModule } from './../upload/upload.module';
-import { StorageRepository } from './storage.repository';
+import { AwsRepository, StorageRepository } from './storage.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './../auth/auth.module';
 import { StorageService } from './storage.service';
@@ -12,6 +12,6 @@ import { Storage } from './storage.entity';
   imports: [TypeOrmModule.forFeature([Storage]), AuthModule, UploadModule],
   exports: [StorageService],
   controllers: [StorageController],
-  providers: [StorageService, StorageRepository],
+  providers: [StorageService, StorageRepository, AwsRepository],
 })
 export class StorageModule {}
