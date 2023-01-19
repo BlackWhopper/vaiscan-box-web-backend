@@ -32,7 +32,7 @@ export class StorageService {
     const hash = await this.uploadService.uploadFile(file);
 
     this.storageRepository.uploadFile(uId, fileName, file, path, hash);
-    this.awsService.uploadFile(file, fileName, userName);
+    this.awsService.uploadS3(file, fileName, userName);
     // fs.writeFile(`files/${userName}/${fileName}`, file.buffer, (err) => {
     //   if (err) throw err;
     // });

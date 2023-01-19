@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { S3, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import * as config from 'config';
 
 const aws = config.get('aws');
@@ -14,7 +14,8 @@ export class AwsService {
     },
   });
   private bucket = aws.bucket;
-  uploadFile(file: Express.Multer.File, fileName: string, userName: string) {
+
+  uploadS3(file: Express.Multer.File, fileName: string, userName: string) {
     const uploadParam = {
       Bucket: this.bucket,
       Key: userName + '/' + fileName,
@@ -28,12 +29,27 @@ export class AwsService {
   }
 
   createDirectory(userName: string) {
-    const directoryParam = {
-      Bucket: this.bucket,
-      Key: userName + '/',
-    };
     try {
-      this.s3.send(new PutObjectCommand(directoryParam));
+      this.s3.send(
+        new PutObjectCommand({
+          Bucket: this.bucket,
+          Key: userName + '/',
+        }),
+      );
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async downloadS3(userName: string, fileName: string) {
+    try {
+      const data = await this.s3.send(
+        new GetObjectCommand({
+          Bucket: this.bucket,
+          Key: userName + '/' + fileName,
+        }),
+      );
+      return data;
     } catch (err) {
       throw err;
     }
