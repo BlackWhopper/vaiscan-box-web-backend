@@ -1,12 +1,6 @@
 import { Injectable, Put } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Storage } from './storage.entity';
-import { S3, PutObjectCommand } from '@aws-sdk/client-s3';
-import { fromIni } from '@aws-sdk/credential-providers';
-import * as config from 'config';
-
-const aws = config.get('aws');
-
 @Injectable()
 export class StorageRepository extends Repository<Storage> {
   constructor(private dataSource: DataSource) {
@@ -31,30 +25,5 @@ export class StorageRepository extends Repository<Storage> {
     });
 
     this.save(savedFile);
-  }
-}
-
-@Injectable()
-export class AwsRepository {
-  private region = process.env.AWS_REGION || aws.region;
-  private s3 = new S3({
-    region: this.region,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY || aws.acessKey,
-      secretAccessKey: process.env.AWS_SECRET_KEY || aws.secretAccessKey,
-    },
-  });
-  private bucket = aws.bucket;
-  uploadFile(file: Express.Multer.File, fileName: string, userName: string) {
-    const uploadParam = {
-      Bucket: this.bucket,
-      Key: userName + '/' + fileName,
-      Body: file.buffer,
-    };
-    try {
-      this.s3.send(new PutObjectCommand(uploadParam));
-    } catch (err) {
-      console.log('Error', err);
-    }
   }
 }

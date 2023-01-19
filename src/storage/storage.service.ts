@@ -1,18 +1,15 @@
+import { AwsService } from './../aws/aws.service';
 import { UploadService } from './../upload/upload.service';
-import { UserRepository } from './../auth/auth.repository';
-import { FileTypePathDto } from './dto/upload-file.dto';
-import { AwsRepository, StorageRepository } from './storage.repository';
+import { StorageRepository } from './storage.repository';
 import { Injectable } from '@nestjs/common';
-import { S3 } from '@aws-sdk/client-s3';
 import * as fs from 'fs';
 
 @Injectable()
 export class StorageService {
   constructor(
     private storageRepository: StorageRepository,
-    private userRepository: UserRepository,
     private uploadService: UploadService,
-    private awsRepository: AwsRepository,
+    private awsService: AwsService,
   ) {}
 
   async getRootFileList(uId: number) {
@@ -26,19 +23,18 @@ export class StorageService {
 
   async uploadFileInStorage(
     uId: number,
+    userName: string,
     file: Express.Multer.File,
     path: string,
   ) {
     const random = Math.floor(Math.random() * (999999 - 100001) + 100000);
     const fileName = `${Date.now()}-${random}`;
     const hash = await this.uploadService.uploadFile(file);
-    const userName = (await this.userRepository.findOneBy({ id: uId }))
-      .username;
 
     this.storageRepository.uploadFile(uId, fileName, file, path, hash);
-    this.awsRepository.uploadFile(file, fileName, userName);
-    fs.writeFile(`files/${userName}/${fileName}`, file.buffer, (err) => {
-      if (err) throw err;
-    });
+    this.awsService.uploadFile(file, fileName, userName);
+    // fs.writeFile(`files/${userName}/${fileName}`, file.buffer, (err) => {
+    //   if (err) throw err;
+    // });
   }
 }

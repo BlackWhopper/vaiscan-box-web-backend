@@ -6,6 +6,7 @@ import { StorageModule } from './storage/storage.module';
 import * as config from 'config';
 import { UploadModule } from './upload/upload.module';
 import { FileModule } from './file/file.module';
+import { AwsModule } from './aws/aws.module';
 
 const mariaDB = config.get('mariadb');
 @Module({
@@ -18,12 +19,13 @@ const mariaDB = config.get('mariadb');
       password: process.env.MARIA_PASSWORD || mariaDB.password,
       database: process.env.MARIA_DATABASE || mariaDB.database,
       entities: [__dirname + '/**/*.entity.{js,ts}'],
-      synchronize: mariaDB.synchronize
+      synchronize: mariaDB.synchronize,
     }),
     StorageModule,
     UploadModule,
     FileModule,
     AuthModule,
+    AwsModule,
   ],
   controllers: [AppController],
 })

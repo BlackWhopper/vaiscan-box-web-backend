@@ -1,4 +1,3 @@
-import { AuthService } from './auth.service';
 import {
   Body,
   Controller,
@@ -9,19 +8,22 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
+import { AuthService } from './auth.service';
 import { AuthCredentialsDto, AuthCreateDto } from './dto/auth.dto';
 import express, { Request, Response, NextFunction } from 'express';
 import * as config from 'config';
-import { AuthGuard } from '@nestjs/passport';
-
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('signup')
   @Redirect('')
-  signUp(@Body(ValidationPipe) authCreateDto: AuthCreateDto) {
-    this.authService.signUp(authCreateDto);
+  async signUp(@Body(ValidationPipe) authCreateDto: AuthCreateDto) {
+    try {
+      await this.authService.signUp(authCreateDto);
+    } catch (err) {
+      return err;
+    }
     return { url: 'user/login' };
   }
 

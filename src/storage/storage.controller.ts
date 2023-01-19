@@ -39,6 +39,11 @@ export class StorageController {
     @UploadedFile() file: Express.Multer.File,
     @Body() data,
   ) {
-    this.storageService.uploadFileInStorage(req.user.id, file, data.path);
+    this.storageService.uploadFileInStorage(
+      req.user.id,
+      req.user.username,
+      file,
+      data.path,
+    );
   }
 }

@@ -1,18 +1,29 @@
+import { AwsService } from './../aws/aws.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from './auth.repository';
 import * as bcrypt from 'bcryptjs';
 import { AuthCredentialsDto, AuthCreateDto } from './dto/auth.dto';
+import * as fs from 'fs';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userRepository: UserRepository,
     private jwtService: JwtService,
+    private awsService: AwsService,
   ) {}
 
   async signUp(authCreateDto: AuthCreateDto) {
-    return this.userRepository.createUser(authCreateDto);
+    try {
+      await this.userRepository.createUser(authCreateDto);
+      this.awsService.createDirectory(authCreateDto.username);
+      fs.mkdir('files/' + authCreateDto.username, (err) => {
+        if (err) throw err;
+      });
+    } catch (err) {
+      throw err;
+    }
   }
 
   async signIn(
