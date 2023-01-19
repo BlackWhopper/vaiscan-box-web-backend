@@ -7,6 +7,7 @@ import * as config from 'config';
 import { UploadModule } from './upload/upload.module';
 import { FileModule } from './file/file.module';
 import { AwsModule } from './aws/aws.module';
+import { UserModule } from './user/user.module';
 
 const mariaDB = config.get('mariadb');
 @Module({
@@ -26,6 +27,7 @@ const mariaDB = config.get('mariadb');
     FileModule,
     AuthModule,
     AwsModule,
+    UserModule,
   ],
   controllers: [AppController],
 })

@@ -1,7 +1,5 @@
 import { AwsModule } from './../aws/aws.module';
-import { AwsService } from './../aws/aws.service';
 import { AuthModule } from './../auth/auth.module';
-import { UserRepository } from './../auth/auth.repository';
 import { UploadModule } from './../upload/upload.module';
 import { StorageRepository } from './storage.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
