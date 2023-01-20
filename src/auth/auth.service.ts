@@ -18,9 +18,9 @@ export class AuthService {
     try {
       await this.userRepository.createUser(authCreateDto);
       this.awsService.createDirectory(authCreateDto.username);
-      fs.mkdir('files/' + authCreateDto.username, (err) => {
-        if (err) throw err;
-      });
+      // fs.mkdir('files/' + authCreateDto.username, (err) => {
+      //   if (err) throw err;
+      // });
     } catch (err) {
       throw err;
     }

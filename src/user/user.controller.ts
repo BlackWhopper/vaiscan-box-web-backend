@@ -5,6 +5,7 @@ import {
   Controller,
   Get,
   Post,
+  Redirect,
   Req,
   Res,
   UnauthorizedException,
@@ -31,10 +32,10 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard())
+  @Redirect('/user/manage')
   @Post('modify')
   async modifyUser(
     @Req() req,
-    @Res() res: Response,
     @Body(ValidationPipe) userModifyDto: UserModifyDto,
   ) {
     if (req.user.user_id !== 1) throw new UnauthorizedException('Not Admin');
@@ -43,6 +44,18 @@ export class UserController {
     } catch (error) {
       throw error;
     }
-    res.redirect('/user/manage');
+  }
+
+  @UseGuards(AuthGuard())
+  @Redirect('/user/manage')
+  @Post('delete')
+  async deleteUser(@Req() req, @Res() res: Response, @Body() body) {
+    if (req.user.user_id !== 1) throw new UnauthorizedException('Not Admin');
+    const uId = body.user_id;
+    try {
+      await this.userService.deleteUser(uId);
+    } catch (err) {
+      throw err;
+    }
   }
 }

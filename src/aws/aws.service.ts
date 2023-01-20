@@ -1,5 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { S3, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+  ListObjectsCommand,
+  DeleteObjectsCommand,
+} from '@aws-sdk/client-s3';
 import * as config from 'config';
 
 const aws = config.get('aws');
@@ -50,6 +57,47 @@ export class AwsService {
         }),
       );
       return data;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteUserDir(userName: string) {
+    try {
+      const listedObjects = await this.s3.send(
+        new ListObjectsCommand({
+          Bucket: this.bucket,
+          Prefix: userName + '/',
+        }),
+      );
+
+      if (listedObjects.Contents.length === 0) return;
+
+      const deleteParams = {
+        Bucket: this.bucket,
+        Delete: { Objects: [] },
+      };
+
+      listedObjects.Contents.forEach(({ Key }) => {
+        deleteParams.Delete.Objects.push({ Key });
+      });
+
+      await this.s3.send(new DeleteObjectsCommand(deleteParams));
+
+      if (listedObjects.IsTruncated) await this.deleteUserDir(userName);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteFile(userName: string, fileName: string) {
+    try {
+      await this.s3.send(
+        new DeleteObjectCommand({
+          Bucket: this.bucket,
+          Key: userName + '/' + fileName,
+        }),
+      );
     } catch (err) {
       throw err;
     }

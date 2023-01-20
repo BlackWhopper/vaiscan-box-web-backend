@@ -31,19 +31,48 @@ export class StorageController {
   getSubFileList(@Req() req, @Param('path') path: string) {
     return this.storageService.getSubFileList(req.user.user_id, path);
   }
+
   @Post('upload')
-  //@Redirect('')
+  @Redirect('/storage')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFileInStorage(
+  async uploadFileInStorage(
     @Req() req,
     @UploadedFile() file: Express.Multer.File,
-    @Body() param,
+    @Body() body,
   ) {
-    this.storageService.uploadFileInStorage(
-      req.user.user_id,
-      req.user.username,
-      file,
-      param.path,
-    );
+    const uId = req.user.user_id;
+    const userName = req.user.username;
+    const path = body.path;
+
+    await this.storageService.uploadFileInStorage(uId, userName, file, path);
+    if (path !== '/') {
+      return { url: `/storage/${this.storageService.encryptPath(path)}` };
+    }
+  }
+
+  @Post('download')
+  @Redirect('/storage')
+  downloadFileInStorage(@Req() req, @Body() body) {
+    const uId = req.user.user_id;
+    const userName = req.user.body;
+    const storageId = body.storage_id;
+  }
+
+  @Post('delete')
+  @Redirect('/storage')
+  async deleteFileInStorage(
+    @Req() req,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body,
+  ) {
+    const uId = req.user.user_id;
+    const userName = req.user.username;
+    const storageId = body.storage_id;
+
+    try {
+      await this.storageService.deletFileInStorage(uId, storageId, userName);
+    } catch (err) {
+      throw err;
+    }
   }
 }

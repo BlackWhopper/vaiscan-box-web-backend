@@ -15,7 +15,7 @@ import { Storage } from './storage.entity';
     AuthModule,
     AwsModule,
   ],
-  exports: [StorageService],
+  exports: [StorageService, StorageRepository],
   controllers: [StorageController],
   providers: [StorageService, StorageRepository],
 })

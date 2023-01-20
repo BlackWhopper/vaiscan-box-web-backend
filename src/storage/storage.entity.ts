@@ -14,7 +14,7 @@ export class Storage {
   @Column()
   file_type: string;
 
-  @Column()
+  @Column({ nullable: true })
   size: number;
 
   @Column()
@@ -29,7 +29,7 @@ export class Storage {
   @Column('tinyint', { default: 0 })
   static_status: number;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: true })
   hash: string;
 
   @Column()
