@@ -4,14 +4,10 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
-  ParseFilePipe,
   Get,
   Redirect,
-  HttpStatus,
-  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { isArray } from 'class-validator';
 
 @Controller('upload')
 export class UploadController {

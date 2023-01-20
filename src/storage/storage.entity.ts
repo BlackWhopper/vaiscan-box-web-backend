@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Storage {
   @PrimaryGeneratedColumn()
-  file_id: number;
+  storage_id: number;
 
   @Column()
   file_name: string;

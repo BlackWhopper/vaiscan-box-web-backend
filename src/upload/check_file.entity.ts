@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class CheckFile {
   @PrimaryGeneratedColumn()
-  index: number;
+  file_id: number;
 
   @Column()
   hash: string;

@@ -26,7 +26,7 @@ const jwtConfig = config.get('jwt');
     TypeOrmModule.forFeature([User]),
     AwsModule,
   ],
-  exports: [AuthService, JwtStrategy, passportModule],
+  exports: [AuthService, JwtStrategy, UserRepository, passportModule],
   controllers: [AuthController],
   providers: [AuthService, UserRepository, JwtStrategy],
 })

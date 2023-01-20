@@ -24,12 +24,12 @@ export class StorageController {
 
   @Get()
   getRootFileList(@Req() req) {
-    return this.storageService.getRootFileList(req.user.id);
+    return this.storageService.getRootFileList(req.user.user_id);
   }
 
   @Get(':path')
   getSubFileList(@Req() req, @Param('path') path: string) {
-    return this.storageService.getSubFileList(req.user.id, path);
+    return this.storageService.getSubFileList(req.user.user_id, path);
   }
   @Post('upload')
   //@Redirect('')
@@ -37,13 +37,13 @@ export class StorageController {
   uploadFileInStorage(
     @Req() req,
     @UploadedFile() file: Express.Multer.File,
-    @Body() data,
+    @Body() param,
   ) {
     this.storageService.uploadFileInStorage(
-      req.user.id,
+      req.user.user_id,
       req.user.username,
       file,
-      data.path,
+      param.path,
     );
   }
 }

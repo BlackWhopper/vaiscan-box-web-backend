@@ -3,41 +3,52 @@ import {
   Controller,
   Post,
   Redirect,
-  Req,
   Res,
-  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto, AuthCreateDto } from './dto/auth.dto';
-import express, { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import * as config from 'config';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('signup')
-  @Redirect('')
-  async signUp(@Body(ValidationPipe) authCreateDto: AuthCreateDto) {
+  async signUp(
+    @Res({ passthrough: true }) res: Response,
+    @Body(ValidationPipe) authCreateDto: AuthCreateDto,
+  ) {
     try {
       await this.authService.signUp(authCreateDto);
     } catch (err) {
-      return err;
+      throw err;
     }
-    return { url: 'user/login' };
+    res.redirect('/user/login');
   }
 
   @Post('signin')
-  @Redirect('')
   async signIn(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const token = await this.authService.signIn(authCredentialsDto);
-    res.cookie('Authentication', token.accessToken, {
+    try {
+      const token = await this.authService.signIn(authCredentialsDto);
+      res.cookie('token', token.accessToken, {
+        httpOnly: true,
+        maxAge: config.get('jwt.expiresIn'),
+      });
+    } catch (err) {
+      throw err;
+    }
+    res.redirect('/storage');
+  }
+
+  @Post('signout')
+  @Redirect('/upload')
+  async signOut(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('token', {
       httpOnly: true,
-      maxAge: config.get('jwt.expiresIn'),
     });
-    return { url: '/storage' };
   }
 }

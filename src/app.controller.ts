@@ -6,7 +6,7 @@ export class AppController {
   @Get()
   @Redirect('')
   getHello(@Req() req: Request) {
-    if (req.cookies['Authentication'] === undefined) {
+    if (req.cookies['token'] === undefined) {
       return { url: 'upload' };
     } else {
       return { url: 'storage' };

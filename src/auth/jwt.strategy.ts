@@ -1,3 +1,4 @@
+import { AuthController } from './auth.controller';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -15,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       //쿠키 사용
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          return request?.cookies?.Authentication;
+          return request?.cookies?.token;
         },
       ]),
     });
@@ -30,9 +31,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     return {
-      id: user.id,
+      user_id: user.user_id,
       username: user.username,
-      name: user.name,
+      alias: user.alias,
     };
   }
 }

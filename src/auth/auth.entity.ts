@@ -10,7 +10,7 @@ import {
 @Unique(['username'])
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  user_id: number;
 
   @Column()
   username: string;
@@ -19,7 +19,7 @@ export class User extends BaseEntity {
   password: string;
 
   @Column()
-  name: string;
+  alias: string;
 
   @Column('datetime', { default: () => 'CURRENT_TIMESTAMP' })
   create_time: string;
