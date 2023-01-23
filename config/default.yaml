@@ -15,3 +15,6 @@ ai:
 
 aws:
   bucket: 'vaiscanbox'
+
+session:
+  maxAge: 300000

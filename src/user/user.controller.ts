@@ -19,11 +19,6 @@ import { UserModifyDto } from 'src/auth/dto/auth.dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get('login')
-  getLoginPage() {
-    return 'login page';
-  }
-
   @UseGuards(AuthGuard())
   @Get('manage')
   async getUserManagePage(@Req() req) {

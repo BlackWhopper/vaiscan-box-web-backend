@@ -45,10 +45,24 @@ export class StorageService {
     // });
   }
 
+  async download(user_id: number, userName: string, storage_id: number) {
+    const find = await this.storageRepository.findOneBy({
+      storage_id,
+      user_id,
+    });
+    if (!find) throw new BadRequestException();
+
+    const data = await this.awsService.downloadS3(userName, find.file_name);
+    const path = `/temp/${find.file_name}`;
+    fs.writeFileSync(path, await data.Body.transformToByteArray());
+
+    return { originalName: find.original_name, path };
+  }
+
   async deletFileInStorage(
     user_id: number,
-    storage_id: number,
     userName: string,
+    storage_id: number,
   ) {
     const find = await this.storageRepository.findOneBy({
       storage_id,
@@ -68,7 +82,7 @@ export class StorageService {
         user_id,
       });
       await fileInDir.forEach(({ storage_id }) => {
-        this.deletFileInStorage(user_id, storage_id, userName);
+        this.deletFileInStorage(user_id, userName, storage_id);
       });
     }
 

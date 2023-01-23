@@ -11,3 +11,6 @@ aws:
   region: 'ap-northeast-2'
   acessKey: 'AKIAZELXFW3RZGCAE47N'
   secretAccessKey: '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'
+
+session:
+  secret: 'Blackwhopper'

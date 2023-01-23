@@ -5,7 +5,7 @@ export class Storage {
   @PrimaryGeneratedColumn()
   storage_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   file_name: string;
 
   @Column()
@@ -29,7 +29,7 @@ export class Storage {
   @Column('tinyint', { default: 0 })
   static_status: number;
 
-  @Column('varchar', { nullable: true })
+  @Column({ nullable: true })
   hash: string;
 
   @Column()

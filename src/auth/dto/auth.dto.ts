@@ -6,9 +6,14 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class AuthCredentialsDto {
+export class AuthCredentialsUsernameDto {
   @IsString()
   username: string;
+}
+
+export class AuthCredentialsPasswordDto {
+  @IsNumber()
+  user_id: number;
 
   @IsString()
   password: string;

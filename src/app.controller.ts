@@ -1,5 +1,5 @@
-import { Controller, Get, Query, Redirect, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Get, Query, Redirect, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 
 @Controller()
 export class AppController {
@@ -11,5 +11,16 @@ export class AppController {
     } else {
       return { url: 'storage' };
     }
+  }
+
+  @Get('/signin')
+  getLoginPage() {
+    return 'id page';
+  }
+
+  @Get('/signin/password')
+  getPasswordInputPage(@Req() req: Request, @Res() res: Response) {
+    if (!req.session.user_id) return res.redirect('/signin');
+    res.send('password page');
   }
 }
