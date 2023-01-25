@@ -8,7 +8,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthCreateDto } from './dto/auth.dto';
+import {
+  AuthCreateDto,
+  AuthPasswordDto,
+  AuthUsernameDto,
+} from './dto/auth.dto';
 import { Request, Response } from 'express';
 import * as config from 'config';
 @Controller('auth')
@@ -30,13 +34,13 @@ export class AuthController {
 
   @Post('/signin/username')
   async signInUsername(
-    @Body(ValidationPipe) body,
+    @Body(ValidationPipe) authUsernameDto: AuthUsernameDto,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
       const { user_id, username } = await this.authService.signInUsername(
-        body.username,
+        authUsernameDto.username,
       );
 
       req.session.user_id = user_id;
@@ -51,7 +55,7 @@ export class AuthController {
 
   @Post('/signin/password')
   async signInPass(
-    @Body(ValidationPipe) body,
+    @Body(ValidationPipe) authPasswordDto: AuthPasswordDto,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
@@ -60,7 +64,7 @@ export class AuthController {
     try {
       const token = await this.authService.signInPassword(
         user_id,
-        body.password,
+        authPasswordDto.password,
       );
       res.cookie('token', token.accessToken, {
         httpOnly: true,

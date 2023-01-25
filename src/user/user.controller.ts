@@ -13,7 +13,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { UserModifyDto } from 'src/auth/dto/auth.dto';
+import { UserDeleteDto, UserModifyDto } from 'src/auth/dto/auth.dto';
 
 @Controller('user')
 export class UserController {
@@ -44,9 +44,13 @@ export class UserController {
   @UseGuards(AuthGuard())
   @Redirect('/user/manage')
   @Post('delete')
-  async deleteUser(@Req() req, @Res() res: Response, @Body() body) {
+  async deleteUser(
+    @Req() req,
+    @Res() res: Response,
+    @Body() userDeleteDto: UserDeleteDto,
+  ) {
     if (req.user.user_id !== 1) throw new UnauthorizedException('Not Admin');
-    const uId = body.user_id;
+    const uId = userDeleteDto.user_id;
     try {
       await this.userService.deleteUser(uId);
     } catch (err) {

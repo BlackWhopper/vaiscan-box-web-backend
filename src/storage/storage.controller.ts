@@ -3,12 +3,14 @@ import {
   Body,
   Controller,
   Param,
+  Query,
   Redirect,
   Req,
   Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   Get,
@@ -16,8 +18,9 @@ import {
 } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
+import { query, Response } from 'express';
 import * as fs from 'fs';
+import { CreateDirDto, StorageIdDto, GetPathDto } from './dto/storage.dto';
 
 @Controller('storage')
 @UseGuards(AuthGuard())
@@ -25,13 +28,21 @@ export class StorageController {
   constructor(private readonly storageService: StorageService) {}
 
   @Get()
-  getRootFileList(@Req() req) {
-    return this.storageService.getRootFileList(req.user.user_id);
+  getFileList(@Req() req, @Query('path') path?: string) {
+    const uId = req.user.user_id;
+    return this.storageService.getFileList(uId, path);
   }
 
-  @Get(':path')
-  getSubFileList(@Req() req, @Param('path') path: string) {
-    return this.storageService.getSubFileList(req.user.user_id, path);
+  @Post('create')
+  async createDirectory(
+    @Req() req,
+    @Body(ValidationPipe) createDirDto: CreateDirDto,
+  ) {
+    const uId = req.user.user_id;
+    const dirName = createDirDto.name;
+    const path = createDirDto.path;
+
+    await this.storageService.createDirectory(uId, dirName, path);
   }
 
   @Post('upload')
@@ -40,11 +51,11 @@ export class StorageController {
   async uploadFileInStorage(
     @Req() req,
     @UploadedFile() file: Express.Multer.File,
-    @Body() body,
+    @Body(ValidationPipe) getPathDto: GetPathDto,
   ) {
     const uId = req.user.user_id;
     const userName = req.user.username;
-    const path = body.path;
+    const path = getPathDto.path;
 
     await this.storageService.uploadFileInStorage(uId, userName, file, path);
     if (path !== '/') {
@@ -54,10 +65,14 @@ export class StorageController {
 
   @Post('download')
   //@Redirect('/storage')
-  async downloadFileInStorage(@Req() req, @Res() res: Response, @Body() body) {
+  async downloadFileInStorage(
+    @Req() req,
+    @Res() res: Response,
+    @Body(ValidationPipe) storageIdDto: StorageIdDto,
+  ) {
     const uId = req.user.user_id;
     const userName = req.user.username;
-    const storageId = body.storageId;
+    const storageId = storageIdDto.storage_id;
 
     const { originalName, path } = await this.storageService.download(
       uId,
@@ -73,10 +88,13 @@ export class StorageController {
 
   @Post('delete')
   //@Redirect('/storage')
-  async deleteFileInStorage(@Req() req, @Body() body) {
+  async deleteFileInStorage(
+    @Req() req,
+    @Body(ValidationPipe) storageIdDto: StorageIdDto,
+  ) {
     const uId = req.user.user_id;
     const userName = req.user.username;
-    const storageId = body.storage_id;
+    const storageId = storageIdDto.storage_id;
 
     try {
       await this.storageService.deletFileInStorage(uId, userName, storageId);

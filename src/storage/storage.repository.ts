@@ -26,4 +26,14 @@ export class StorageRepository extends Repository<Storage> {
 
     this.save(savedFile);
   }
+
+  async createDirectory(uId: number, dirName: string, path: string) {
+    const createDir = this.create({
+      original_name: dirName,
+      file_type: 'dir',
+      path,
+      user_id: uId,
+    });
+    await this.save(createDir);
+  }
 }

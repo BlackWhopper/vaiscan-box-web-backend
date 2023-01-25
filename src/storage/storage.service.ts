@@ -13,21 +13,20 @@ export class StorageService {
   ) {}
 
   encryptPath(plainPath: string) {
-    return Buffer.from(plainPath).toString('base64');
+    return Buffer.from(plainPath, 'utf8').toString('base64');
   }
   decryptPath(encryptPath: string) {
-    return Buffer.from(encryptPath).toString('utf8');
+    return Buffer.from(encryptPath, 'base64').toString('utf8');
   }
 
-  async getRootFileList(uId: number) {
-    return await this.storageRepository.findBy({ user_id: uId, path: '/' });
-  }
-
-  async getSubFileList(uId: number, encodedPath: string) {
-    const path = this.decryptPath(encodedPath);
+  async getFileList(uId: number, encodedPath?: string) {
+    const path = encodedPath ? this.decryptPath(encodedPath) : '/';
     return await this.storageRepository.findBy({ user_id: uId, path });
   }
 
+  async createDirectory(uId: number, dirName: string, path: string) {
+    await this.storageRepository.createDirectory(uId, dirName, path);
+  }
   async uploadFileInStorage(
     uId: number,
     userName: string,
@@ -47,13 +46,14 @@ export class StorageService {
 
   async download(user_id: number, userName: string, storage_id: number) {
     const find = await this.storageRepository.findOneBy({
-      storage_id,
       user_id,
+      storage_id,
     });
-    if (!find) throw new BadRequestException();
+
+    if (!find || find.file_type === 'dir') throw new BadRequestException();
 
     const data = await this.awsService.downloadS3(userName, find.file_name);
-    const path = `/temp/${find.file_name}`;
+    const path = `temp/${find.file_name}`;
     fs.writeFileSync(path, await data.Body.transformToByteArray());
 
     return { originalName: find.original_name, path };

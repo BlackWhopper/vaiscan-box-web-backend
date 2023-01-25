@@ -1,4 +1,5 @@
 import {
+  IsNotEmpty,
   IsNumber,
   IsString,
   Matches,
@@ -6,16 +7,17 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class AuthCredentialsUsernameDto {
+export class AuthUsernameDto {
   @IsString()
+  @MinLength(4)
+  @MaxLength(20)
   username: string;
 }
 
-export class AuthCredentialsPasswordDto {
-  @IsNumber()
-  user_id: number;
-
+export class AuthPasswordDto {
   @IsString()
+  @MinLength(4)
+  @MaxLength(20)
   password: string;
 }
 
@@ -36,6 +38,7 @@ export class AuthCreateDto {
 
 export class UserModifyDto {
   @IsNumber()
+  @IsNotEmpty()
   user_id: number;
 
   @IsString()
@@ -45,4 +48,10 @@ export class UserModifyDto {
 
   @IsString()
   alias: string;
+}
+
+export class UserDeleteDto {
+  @IsNumber()
+  @IsNotEmpty()
+  user_id: number;
 }
