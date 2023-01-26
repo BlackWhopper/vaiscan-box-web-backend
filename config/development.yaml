@@ -4,6 +4,9 @@ mariadb:
   password: 'qjrjzld@'
   synchronize: true
 
+mongodb:
+  host: 'mongodb://13.125.230.113:27017/vaiscan'
+
 jwt:
   secret: 'Blackwhopper'
 

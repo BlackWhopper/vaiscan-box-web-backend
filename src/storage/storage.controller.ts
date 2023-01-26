@@ -19,7 +19,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as fs from 'fs';
-import { CreateDirDto, StorageIdDto, GetPathDto } from './dto/storage.dto';
+import { CreateDirDto, StorageIdDto, UploadFileDto } from './dto/storage.dto';
 
 @Controller('storage')
 @UseGuards(AuthGuard())
@@ -49,17 +49,19 @@ export class StorageController {
   async uploadFileInStorage(
     @Req() req,
     @UploadedFile() file: Express.Multer.File,
-    @Body(ValidationPipe) getPathDto: GetPathDto,
+    @Body(ValidationPipe) uploadFileDto: UploadFileDto,
   ) {
     const uId = req.user.user_id;
     const userName = req.user.username;
-    const path = getPathDto.path;
+    const path = uploadFileDto.path;
+    const isCover = uploadFileDto.cover;
 
     return await this.storageService.uploadFileInStorage(
       uId,
       userName,
       file,
       path,
+      isCover,
     );
   }
 

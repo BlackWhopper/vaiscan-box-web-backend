@@ -2,6 +2,7 @@ import { AwsService } from './../aws/aws.service';
 import { UploadService } from './../upload/upload.service';
 import { StorageRepository } from './storage.repository';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { Storage } from './storage.entity';
 import * as fs from 'fs';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class StorageService {
     return Buffer.from(encryptPath, 'base64').toString('utf8');
   }
 
-  async getFileList(uId: number, encodedPath?: string) {
+  async getFileList(uId: number, encodedPath?: string): Promise<Storage[]> {
     const path = encodedPath ? this.decryptPath(encodedPath) : '/';
     return await this.storageRepository.findBy({ user_id: uId, path });
   }
@@ -37,11 +38,23 @@ export class StorageService {
     userName: string,
     file: Express.Multer.File,
     path: string,
+    isCover: boolean,
   ): Promise<void> {
+    const find = await this.storageRepository.findOneBy({
+      user_id: uId,
+      path,
+      original_name: file.originalname,
+    });
+
+    if (find && !isCover) {
+      return;
+    }
+    if (find && isCover) {
+      await this.deletFileInStorage(uId, userName, find.storage_id);
+    }
     const random = Math.floor(Math.random() * (999999 - 100001) + 100000);
     const fileName = `${Date.now()}-${random}`;
     const hash = await this.uploadService.uploadFile(file);
-
     await this.storageRepository.uploadFile(uId, fileName, file, path, hash);
     this.awsService.uploadS3(file, fileName, userName);
     // fs.writeFile(`files/${userName}/${fileName}`, file.buffer, (err) => {

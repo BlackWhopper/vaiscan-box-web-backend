@@ -4,9 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StorageModule } from './storage/storage.module';
 import * as config from 'config';
 import { UploadModule } from './upload/upload.module';
-import { FileModule } from './file/file.module';
+import { ResultModule } from './result/result.module';
 import { AwsModule } from './aws/aws.module';
 import { UserModule } from './user/user.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 const mariaDB = config.get('mariadb');
 @Module({
@@ -21,9 +22,12 @@ const mariaDB = config.get('mariadb');
       entities: [__dirname + '/**/*.entity.{js,ts}'],
       synchronize: mariaDB.synchronize,
     }),
+    MongooseModule.forRoot(
+      process.env.MONGO_HOSTNAME || config.get('mongodb.host'),
+    ),
     StorageModule,
     UploadModule,
-    FileModule,
+    ResultModule,
     AuthModule,
     AwsModule,
     UserModule,
