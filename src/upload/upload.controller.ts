@@ -4,8 +4,6 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
-  Get,
-  Redirect,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -13,16 +11,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
-  @Get()
-  getUploadPage() {
-    return 'upload page';
-  }
-
   @Post()
-  @Redirect('')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const hash = await this.uploadService.uploadFile(file);
-    return { url: `file/${hash}` };
+    return await this.uploadService.uploadFile(file);
   }
 }

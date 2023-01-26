@@ -14,7 +14,7 @@ export class AuthService {
     private awsService: AwsService,
   ) {}
 
-  async signUp(authCreateDto: AuthCreateDto) {
+  async signUp(authCreateDto: AuthCreateDto): Promise<void> {
     try {
       await this.userRepository.createUser(authCreateDto);
       this.awsService.createDirectory(authCreateDto.username);

@@ -1,8 +1,9 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  HttpCode,
   Post,
-  Redirect,
   Req,
   Res,
   ValidationPipe,
@@ -20,23 +21,19 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('signup')
-  async signUp(
-    @Res({ passthrough: true }) res: Response,
-    @Body(ValidationPipe) authCreateDto: AuthCreateDto,
-  ) {
+  async signUp(@Body(ValidationPipe) authCreateDto: AuthCreateDto) {
     try {
-      await this.authService.signUp(authCreateDto);
+      return await this.authService.signUp(authCreateDto);
     } catch (err) {
       throw err;
     }
-    res.redirect('/user/login');
   }
 
   @Post('/signin/username')
+  @HttpCode(200)
   async signInUsername(
     @Body(ValidationPipe) authUsernameDto: AuthUsernameDto,
     @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
   ) {
     try {
       const { user_id, username } = await this.authService.signInUsername(
@@ -47,19 +44,20 @@ export class AuthController {
       req.session.username = username;
       req.session.cookie.maxAge = config.get('session.maxAge');
 
-      res.redirect('/signin/password');
+      return;
     } catch (err) {
       throw err;
     }
   }
 
   @Post('/signin/password')
+  @HttpCode(200)
   async signInPass(
     @Body(ValidationPipe) authPasswordDto: AuthPasswordDto,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    if (!req.session.user_id) return res.redirect('/signin');
+    if (!req.session.user_id) throw new BadRequestException();
     const user_id = req.session.user_id;
     try {
       const token = await this.authService.signInPassword(
@@ -74,17 +72,18 @@ export class AuthController {
       req.session.destroy((err) => {
         if (err) console.log(err);
       });
-      res.redirect('/storage');
+      return;
     } catch (err) {
       throw err;
     }
   }
 
   @Post('signout')
-  @Redirect('/upload')
+  @HttpCode(200)
   async signOut(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('token', {
       httpOnly: true,
     });
+    return;
   }
 }

@@ -1,7 +1,6 @@
 import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
 import { StorageModule } from './storage/storage.module';
 import * as config from 'config';
 import { UploadModule } from './upload/upload.module';
@@ -29,6 +28,5 @@ const mariaDB = config.get('mariadb');
     AwsModule,
     UserModule,
   ],
-  controllers: [AppController],
 })
 export class AppModule {}

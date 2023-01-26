@@ -21,7 +21,7 @@ export class UserService {
     return await this.userRepository.find();
   }
 
-  async modifyUser(userModifyDto: UserModifyDto) {
+  async modifyUser(userModifyDto: UserModifyDto): Promise<void> {
     try {
       await this.userRepository.modifyUser(userModifyDto);
     } catch (error) {
@@ -29,7 +29,7 @@ export class UserService {
     }
   }
 
-  async deleteUser(uId: number) {
+  async deleteUser(uId: number): Promise<void> {
     if (uId === 1)
       throw new NotAcceptableException("Can't delete Admin account");
 

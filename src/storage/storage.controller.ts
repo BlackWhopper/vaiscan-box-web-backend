@@ -2,9 +2,8 @@ import { StorageService } from './storage.service';
 import {
   Body,
   Controller,
-  Param,
+  HttpCode,
   Query,
-  Redirect,
   Req,
   Res,
   UploadedFile,
@@ -18,7 +17,7 @@ import {
 } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { query, Response } from 'express';
+import { Response } from 'express';
 import * as fs from 'fs';
 import { CreateDirDto, StorageIdDto, GetPathDto } from './dto/storage.dto';
 
@@ -42,11 +41,10 @@ export class StorageController {
     const dirName = createDirDto.name;
     const path = createDirDto.path;
 
-    await this.storageService.createDirectory(uId, dirName, path);
+    return await this.storageService.createDirectory(uId, dirName, path);
   }
 
   @Post('upload')
-  //@Redirect('/storage')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFileInStorage(
     @Req() req,
@@ -57,14 +55,16 @@ export class StorageController {
     const userName = req.user.username;
     const path = getPathDto.path;
 
-    await this.storageService.uploadFileInStorage(uId, userName, file, path);
-    if (path !== '/') {
-      return { url: `/storage/${this.storageService.encryptPath(path)}` };
-    }
+    return await this.storageService.uploadFileInStorage(
+      uId,
+      userName,
+      file,
+      path,
+    );
   }
 
   @Post('download')
-  //@Redirect('/storage')
+  @HttpCode(200)
   async downloadFileInStorage(
     @Req() req,
     @Res() res: Response,
@@ -74,20 +74,23 @@ export class StorageController {
     const userName = req.user.username;
     const storageId = storageIdDto.storage_id;
 
-    const { originalName, path } = await this.storageService.download(
-      uId,
-      userName,
-      storageId,
-    );
-
-    res.download(path, originalName, (err) => {
-      if (err) throw err;
-      fs.unlinkSync(path);
-    });
+    try {
+      const { originalName, path } = await this.storageService.download(
+        uId,
+        userName,
+        storageId,
+      );
+      res.download(path, originalName, (err) => {
+        if (err) throw err;
+        fs.unlinkSync(path);
+      });
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Post('delete')
-  //@Redirect('/storage')
+  @HttpCode(204)
   async deleteFileInStorage(
     @Req() req,
     @Body(ValidationPipe) storageIdDto: StorageIdDto,
@@ -97,7 +100,11 @@ export class StorageController {
     const storageId = storageIdDto.storage_id;
 
     try {
-      await this.storageService.deletFileInStorage(uId, userName, storageId);
+      return await this.storageService.deletFileInStorage(
+        uId,
+        userName,
+        storageId,
+      );
     } catch (err) {
       throw err;
     }

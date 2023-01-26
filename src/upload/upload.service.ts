@@ -50,7 +50,7 @@ export class UploadService {
     };
   }
 
-  async uploadFile(file: Express.Multer.File) {
+  async uploadFile(file: Express.Multer.File): Promise<string> {
     const hash = this.getHash(file);
     const fileInfo = await this.uploadRepository.findOneBy({ hash });
     if (!fileInfo) {

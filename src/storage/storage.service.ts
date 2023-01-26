@@ -24,15 +24,20 @@ export class StorageService {
     return await this.storageRepository.findBy({ user_id: uId, path });
   }
 
-  async createDirectory(uId: number, dirName: string, path: string) {
+  async createDirectory(
+    uId: number,
+    dirName: string,
+    path: string,
+  ): Promise<void> {
     await this.storageRepository.createDirectory(uId, dirName, path);
   }
+
   async uploadFileInStorage(
     uId: number,
     userName: string,
     file: Express.Multer.File,
     path: string,
-  ) {
+  ): Promise<void> {
     const random = Math.floor(Math.random() * (999999 - 100001) + 100000);
     const fileName = `${Date.now()}-${random}`;
     const hash = await this.uploadService.uploadFile(file);
