@@ -8,9 +8,14 @@ jwt:
   secret: 'Blackwhopper'
 
 aws:
+  bucket: 'vaiscanbox'
   region: 'ap-northeast-2'
-  acessKey: 'AKIAZELXFW3RZGCAE47N'
-  secretAccessKey: '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'
+  acessKey: 'AKIAZELXFW3RSRU53Y7T'
+  secretAccessKey: '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'
 
 session:
   secret: 'Blackwhopper'
+
+ai:
+static: 'ws://13.125.230.113:8282'
+dynamic: 'ws://13.125.230.113:8282'
