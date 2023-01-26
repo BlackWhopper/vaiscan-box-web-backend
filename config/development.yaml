@@ -17,5 +17,5 @@ session:
   secret: 'Blackwhopper'
 
 ai:
-static: 'ws://13.125.230.113:8282'
-dynamic: 'ws://13.125.230.113:8282'
+  static: 'ws://13.125.230.113:8282'
+  dynamic: 'ws://13.125.230.113:8282'
