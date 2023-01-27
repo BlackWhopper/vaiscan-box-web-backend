@@ -1,7 +1,11 @@
 import { AwsService } from './../aws/aws.service';
 import { UploadService } from './../upload/upload.service';
 import { StorageRepository } from './storage.repository';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { Storage } from './storage.entity';
 import * as fs from 'fs';
 
@@ -30,6 +34,13 @@ export class StorageService {
     dirName: string,
     path: string,
   ): Promise<void> {
+    const find = await this.storageRepository.findOneBy({
+      user_id: uId,
+      path,
+      original_name: dirName,
+      file_type: 'dir',
+    });
+    if (find) throw new ConflictException('Existing directory name');
     await this.storageRepository.createDirectory(uId, dirName, path);
   }
 
@@ -45,12 +56,12 @@ export class StorageService {
       path,
       original_name: file.originalname,
     });
-
-    if (find && !isCover) {
-      return;
-    }
-    if (find && isCover) {
-      await this.deletFileInStorage(uId, userName, find.storage_id);
+    if (find && find.file_type != 'dir') {
+      if (isCover) {
+        await this.deletFileInStorage(uId, userName, find.storage_id);
+      } else {
+        return;
+      }
     }
     const random = Math.floor(Math.random() * (999999 - 100001) + 100000);
     const fileName = `${Date.now()}-${random}`;

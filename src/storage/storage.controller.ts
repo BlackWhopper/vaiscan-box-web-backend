@@ -41,7 +41,11 @@ export class StorageController {
     const dirName = createDirDto.name;
     const path = createDirDto.path;
 
-    return await this.storageService.createDirectory(uId, dirName, path);
+    try {
+      return await this.storageService.createDirectory(uId, dirName, path);
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Post('upload')
