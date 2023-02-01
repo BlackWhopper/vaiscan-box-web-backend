@@ -22,11 +22,11 @@ export class AwsService {
   });
   private bucket = aws.bucket;
 
-  uploadS3(file: Express.Multer.File, fileName: string, userName: string) {
+  uploadS3(fileName: string, userName: string, data: Buffer) {
     const uploadParam = {
       Bucket: this.bucket,
       Key: userName + '/' + fileName,
-      Body: file.buffer,
+      Body: data,
     };
     try {
       this.s3.send(new PutObjectCommand(uploadParam));

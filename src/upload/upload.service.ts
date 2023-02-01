@@ -1,26 +1,28 @@
 import { UploadRepository } from './upload.repository';
 import { createHash } from 'crypto';
 import { Injectable } from '@nestjs/common';
-import { CheckFile } from './check_file.entity';
 import { WebSocket } from 'ws';
 import * as config from 'config';
+import * as fs from 'fs';
 
 @Injectable()
 export class UploadService {
   constructor(private uploadRepository: UploadRepository) {}
 
-  getHash(file: Express.Multer.File) {
+  getHash(data: Buffer) {
     const hash = createHash('sha256');
-    const buffer = file.buffer;
 
-    hash.update(buffer);
+    hash.update(data);
     const hashSum = hash.digest('hex');
 
     return hashSum;
   }
 
-  staticFileTransfer(file: Express.Multer.File) {
-    console.log(file.buffer.length, file.size);
+  staticFileTransfer(file: Object, data: Buffer) {
+    const fileName = file['origianlFilename'];
+    const fileSize = file['size'];
+
+    console.log(data.length, fileSize);
     const ws = new WebSocket(config.get('ai.static'));
     const bufferSize = 1e7;
     let pos = 0;
@@ -34,14 +36,14 @@ export class UploadService {
       ws.send(msg.data);
 
       if (msg.data === 'FILENAME') {
-        ws.send(file.originalname);
+        ws.send(fileName);
       } else if (msg.data === 'FILESIZE') {
-        ws.send(file.size);
+        ws.send(fileSize);
       } else if (msg.data === 'DATA') {
-        ws.send(file.buffer.slice(pos, pos + bufferSize));
+        ws.send(data.slice(pos, pos + bufferSize));
         pos = pos + bufferSize;
-        if (pos > file.size) {
-          pos = file.size;
+        if (pos > fileSize) {
+          pos = fileSize;
         }
       }
     };
@@ -50,12 +52,16 @@ export class UploadService {
     };
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<string> {
-    const hash = this.getHash(file);
+  async uploadFile(file: Object): Promise<string> {
+    const filePath = file['filepath'];
+    const data = fs.readFileSync(filePath);
+    const hash = this.getHash(data);
+
     const fileInfo = await this.uploadRepository.findOneBy({ hash });
+    await fs.unlinkSync(filePath);
     if (!fileInfo) {
       this.uploadRepository.insertFile(hash);
-      //this.staticFileTransfer(file); //파일 전송
+      //this.staticFileTransfer(file, data); //파일 전송
       return hash;
     } else {
       this.uploadRepository.updateCheckTime(fileInfo);

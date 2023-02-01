@@ -47,15 +47,20 @@ export class StorageService {
   async uploadFileInStorage(
     uId: number,
     userName: string,
-    file: Express.Multer.File,
+    file: Object,
     path: string,
     isCover: boolean,
   ): Promise<void> {
+    const originalName = file['originalFilename'];
+    const filePath = file['filepath'];
+    const data = fs.readFileSync(filePath);
+
     const find = await this.storageRepository.findOneBy({
       user_id: uId,
       path,
-      original_name: file.originalname,
+      original_name: originalName,
     });
+
     if (find && find.file_type != 'dir') {
       if (isCover) {
         await this.deletFileInStorage(uId, userName, find.storage_id);
@@ -67,10 +72,7 @@ export class StorageService {
     const fileName = `${Date.now()}-${random}`;
     const hash = await this.uploadService.uploadFile(file);
     await this.storageRepository.uploadFile(uId, fileName, file, path, hash);
-    this.awsService.uploadS3(file, fileName, userName);
-    // fs.writeFile(`files/${userName}/${fileName}`, file.buffer, (err) => {
-    //   if (err) throw err;
-    // });
+    this.awsService.uploadS3(fileName, userName, data);
   }
 
   async download(user_id: number, userName: string, storage_id: number) {

@@ -6,14 +6,14 @@ export class StorageIdDto {
   storage_id: number;
 }
 
-export class UploadFileDto {
-  @IsString()
-  @IsNotEmpty()
-  path: string;
-  @IsBoolean()
-  @IsNotEmpty()
-  cover: boolean;
-}
+// export class UploadFileDto {
+//   @IsString()
+//   @IsNotEmpty()
+//   path: string;
+//   @IsBoolean()
+//   @IsNotEmpty()
+//   cover: boolean;
+// }
 
 export class CreateDirDto {
   @IsString()

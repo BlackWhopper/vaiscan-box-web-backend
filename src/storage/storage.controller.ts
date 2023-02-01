@@ -6,9 +6,7 @@ import {
   Query,
   Req,
   Res,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import {
@@ -16,10 +14,10 @@ import {
   Post,
 } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as fs from 'fs';
-import { CreateDirDto, StorageIdDto, UploadFileDto } from './dto/storage.dto';
+import { CreateDirDto, StorageIdDto } from './dto/storage.dto';
+import * as formidable from 'formidable';
 
 @Controller('storage')
 @UseGuards(AuthGuard())
@@ -49,24 +47,30 @@ export class StorageController {
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadFileInStorage(
-    @Req() req,
-    @UploadedFile() file: Express.Multer.File,
-    @Body(ValidationPipe) uploadFileDto: UploadFileDto,
-  ) {
+  async uploadFileInStorage(@Req() req) {
     const uId = req.user.user_id;
     const userName = req.user.username;
-    const path = uploadFileDto.path;
-    const isCover = uploadFileDto.cover;
+    const form = formidable({
+      multiples: true,
+      uploadDir: `${__dirname}/../../uploads`,
+    });
 
-    return await this.storageService.uploadFileInStorage(
-      uId,
-      userName,
-      file,
-      path,
-      isCover,
-    );
+    form.parse(req, async (err, fields, files) => {
+      if (err) throw err;
+      const path: any = fields.path;
+      const isCover: any = fields.cover;
+
+      for (const file in files) {
+        await this.storageService.uploadFileInStorage(
+          uId,
+          userName,
+          files[file],
+          path,
+          isCover,
+        );
+      }
+      return;
+    });
   }
 
   @Post('download')
