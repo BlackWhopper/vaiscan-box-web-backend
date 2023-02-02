@@ -16,7 +16,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import * as fs from 'fs';
-import { CreateDirDto, StorageIdDto } from './dto/storage.dto';
+import { CreateDirDto, StorageIdDto, MoveFileDto } from './dto/storage.dto';
 import * as formidable from 'formidable';
 
 @Controller('storage')
@@ -94,6 +94,23 @@ export class StorageController {
         if (err) throw err;
         fs.unlinkSync(path);
       });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Post('move')
+  @HttpCode(204)
+  async moveFileInStorage(
+    @Req() req,
+    @Body(ValidationPipe) moveFileDto: MoveFileDto,
+  ) {
+    const uId = req.user.user_id;
+    const storageId = moveFileDto.storage_id;
+    const path = moveFileDto.path;
+
+    try {
+      return await this.storageService.moveFileInStorage(uId, storageId, path);
     } catch (err) {
       throw err;
     }

@@ -90,14 +90,28 @@ export class StorageService {
     return { originalName: find.original_name, path };
   }
 
+  async moveFileInStorage(
+    user_id: number,
+    storage_id: number,
+    path: string,
+  ): Promise<void> {
+    const find = await this.storageRepository.findOneBy({
+      user_id,
+      storage_id,
+    });
+    if (!find) throw new BadRequestException();
+
+    return await this.storageRepository.updatePath(find, path);
+  }
+
   async deletFileInStorage(
     user_id: number,
     userName: string,
     storage_id: number,
   ) {
     const find = await this.storageRepository.findOneBy({
-      storage_id,
       user_id,
+      storage_id,
     });
     if (!find) throw new BadRequestException();
 

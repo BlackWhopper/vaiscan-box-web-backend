@@ -36,4 +36,9 @@ export class StorageRepository extends Repository<Storage> {
     });
     await this.save(createDir);
   }
+
+  async updatePath(storage: Storage, path: string) {
+    storage.path = path;
+    await this.save(storage);
+  }
 }

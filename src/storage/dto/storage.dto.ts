@@ -6,6 +6,12 @@ export class StorageIdDto {
   storage_id: number;
 }
 
+export class MoveFileDto extends StorageIdDto {
+  @IsString()
+  @IsNotEmpty()
+  path: string;
+}
+
 // export class UploadFileDto {
 //   @IsString()
 //   @IsNotEmpty()
