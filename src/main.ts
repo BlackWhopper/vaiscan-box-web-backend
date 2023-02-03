@@ -8,7 +8,7 @@ import * as session from 'express-session';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: '*',
+      origin: true,
       methods: 'GET,POST',
       credentials: true,
     },

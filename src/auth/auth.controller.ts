@@ -55,24 +55,15 @@ export class AuthController {
   async signInPass(
     @Body(ValidationPipe) authPasswordDto: AuthPasswordDto,
     @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
   ) {
     if (!req.session.user_id) throw new BadRequestException();
     const user_id = req.session.user_id;
+    req.session.destroy((err) => {});
     try {
-      const token = await this.authService.signInPassword(
+      return await this.authService.signInPassword(
         user_id,
         authPasswordDto.password,
       );
-      res.cookie('token', token.accessToken, {
-        httpOnly: true,
-        maxAge: config.get('jwt.expiresIn'),
-      });
-
-      req.session.destroy((err) => {
-        if (err) console.log(err);
-      });
-      return;
     } catch (err) {
       throw err;
     }

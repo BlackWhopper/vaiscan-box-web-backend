@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       //쿠키 사용
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          return request?.cookies?.token;
+          return request?.cookies?.accessToken;
         },
       ]),
     });

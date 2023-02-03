@@ -44,8 +44,7 @@ export class AuthService {
       // 유저 토큰 생성 (Secret + Payload)
       this.userRepository.updateLoginTime(user);
       const payload = { username: user.username };
-      const accessToken = await this.jwtService.sign(payload);
-      return { accessToken };
+      return { accessToken: await this.jwtService.sign(payload) };
     } else {
       throw new UnauthorizedException('login failed');
     }
