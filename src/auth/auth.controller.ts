@@ -20,7 +20,7 @@ import * as config from 'config';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('signup')
+  @Post('/signup')
   async signUp(@Body(ValidationPipe) authCreateDto: AuthCreateDto) {
     try {
       return await this.authService.signUp(authCreateDto);
@@ -29,7 +29,7 @@ export class AuthController {
     }
   }
 
-  @Post('/signin/username')
+  @Post('/signin')
   @HttpCode(200)
   async signInUsername(
     @Body(ValidationPipe) authUsernameDto: AuthUsernameDto,
@@ -58,7 +58,8 @@ export class AuthController {
   ) {
     if (!req.session.user_id) throw new BadRequestException();
     const user_id = req.session.user_id;
-    req.session.destroy((err) => {});
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    req.session.destroy(() => {});
     try {
       return await this.authService.signInPassword(
         user_id,

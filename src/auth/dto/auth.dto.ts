@@ -16,7 +16,7 @@ export class AuthUsernameDto {
 
 export class AuthPasswordDto {
   @IsString()
-  @MinLength(4)
+  @MinLength(8)
   @MaxLength(20)
   password: string;
 }
@@ -28,7 +28,7 @@ export class AuthCreateDto {
   username: string;
 
   @IsString()
-  @MinLength(4)
+  @MinLength(8)
   @MaxLength(20)
   password: string;
 
@@ -42,7 +42,7 @@ export class UserModifyDto {
   user_id: number;
 
   @IsString()
-  @MinLength(4)
+  @MinLength(8)
   @MaxLength(20)
   password: string;
 
