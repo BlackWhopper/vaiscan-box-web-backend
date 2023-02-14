@@ -15,12 +15,16 @@ export class UploadController {
       uploadDir: `${__dirname}/../../uploads`,
     });
 
-    form.parse(req, async (err, fields, files) => {
-      if (err) throw err;
-      for (const file in files) {
-        hashes.push(await this.uploadService.uploadFile(files[file]));
-      }
-      return hashes;
-    });
+    try {
+      form.parse(req, async (err, fields, files) => {
+        if (err) throw err;
+        for (const file in files) {
+          hashes.push(await this.uploadService.uploadFile(files[file]));
+        }
+        return hashes;
+      });
+    } catch (err) {
+      throw err;
+    }
   }
 }
