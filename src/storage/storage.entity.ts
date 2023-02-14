@@ -24,9 +24,6 @@ export class Storage {
   upload_time: string;
 
   @Column('tinyint', { default: 0 })
-  dynamic_status: number;
-
-  @Column('tinyint', { default: 0 })
   static_status: number;
 
   @Column({ nullable: true })

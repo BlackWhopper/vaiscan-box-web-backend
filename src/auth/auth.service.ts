@@ -1,10 +1,9 @@
 import { AwsService } from './../aws/aws.service';
-import { Body, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from './auth.repository';
 import * as bcrypt from 'bcryptjs';
 import { AuthCreateDto } from './dto/auth.dto';
-import * as fs from 'fs';
 
 @Injectable()
 export class AuthService {
@@ -18,9 +17,6 @@ export class AuthService {
     try {
       await this.userRepository.createUser(authCreateDto);
       this.awsService.createDirectory(authCreateDto.username);
-      // fs.mkdir('files/' + authCreateDto.username, (err) => {
-      //   if (err) throw err;
-      // });
     } catch (err) {
       throw err;
     }

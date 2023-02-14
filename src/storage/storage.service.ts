@@ -47,7 +47,7 @@ export class StorageService {
   async uploadFileInStorage(
     uId: number,
     userName: string,
-    file: Object,
+    file: any,
     path: string,
     isCover: boolean,
   ): Promise<void> {
@@ -134,7 +134,6 @@ export class StorageService {
     try {
       if (find.file_type !== 'dir') {
         await this.awsService.deleteFile(userName, find.file_name);
-        //fs.rmSync(`files/${userName}/${find.file_name}`);
       }
       await this.storageRepository.delete({ storage_id, user_id });
     } catch (err) {

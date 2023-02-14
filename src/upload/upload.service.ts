@@ -18,16 +18,11 @@ export class UploadService {
     return hashSum;
   }
 
-  staticFileTransfer(file: Object, data: Buffer) {
-    const fileName = file['origianlFilename'];
-    const fileSize = file['size'];
-
-    console.log(data.length, fileSize);
-    const ws = new WebSocket(config.get('ai.static'));
+  fileTransfer(hash: string, fileSize: number, data: Buffer) {
+    const ws = new WebSocket(config.get('ai.host'));
     const bufferSize = 1e7;
     let pos = 0;
-    console.log('input');
-    ws.onopen = (event) => {
+    ws.onopen = () => {
       ws.send('START');
       console.log('start');
     };
@@ -35,8 +30,8 @@ export class UploadService {
       console.log(msg.data);
       ws.send(msg.data);
 
-      if (msg.data === 'FILENAME') {
-        ws.send(fileName);
+      if (msg.data === 'HASH') {
+        ws.send(hash);
       } else if (msg.data === 'FILESIZE') {
         ws.send(fileSize);
       } else if (msg.data === 'DATA') {
@@ -52,8 +47,9 @@ export class UploadService {
     };
   }
 
-  async uploadFile(file: Object): Promise<string> {
+  async uploadFile(file: any): Promise<string> {
     const filePath = file['filepath'];
+    const fileSize = file['size'];
     const data = fs.readFileSync(filePath);
     const hash = this.getHash(data);
 
@@ -61,7 +57,7 @@ export class UploadService {
     await fs.unlinkSync(filePath);
     if (!fileInfo) {
       this.uploadRepository.insertFile(hash);
-      //this.staticFileTransfer(file, data); //파일 전송
+      this.fileTransfer(hash, fileSize, data); //파일 전송
       return hash;
     } else {
       this.uploadRepository.updateCheckTime(fileInfo);

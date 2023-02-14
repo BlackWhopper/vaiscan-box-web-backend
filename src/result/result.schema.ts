@@ -12,9 +12,6 @@ export class Result {
   static_progress: number;
 
   @Prop()
-  dynamic_progress: number;
-
-  @Prop()
   risk: number;
 }
 
