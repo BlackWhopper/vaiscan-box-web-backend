@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
@@ -50,6 +51,16 @@ export class AuthController {
     }
   }
 
+  @Get('/signin/password')
+  getSignInPass(@Req() req: Request) {
+    if (!req.session.user_id) {
+      throw new BadRequestException();
+    } else {
+      const userName = req.session.username;
+      return userName;
+    }
+  }
+
   @Post('/signin/password')
   @HttpCode(200)
   async signInPass(
@@ -73,7 +84,7 @@ export class AuthController {
   @Post('signout')
   @HttpCode(200)
   async signOut(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('token', {
+    res.clearCookie('accessToken', {
       httpOnly: true,
     });
     return;

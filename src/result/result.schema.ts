@@ -9,7 +9,7 @@ export class Result {
   hash: string;
 
   @Prop()
-  static_progress: number;
+  progress: number;
 
   @Prop()
   risk: number;

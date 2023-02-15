@@ -10,5 +10,6 @@ import { ResultService } from './result.service';
   ],
   controllers: [ResultController],
   providers: [ResultService],
+  exports: [ResultService],
 })
 export class ResultModule {}

@@ -1,13 +1,16 @@
+import { ResultService } from './../result/result.service';
 import { UploadRepository } from './upload.repository';
 import { createHash } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { WebSocket } from 'ws';
 import * as config from 'config';
 import * as fs from 'fs';
-
 @Injectable()
 export class UploadService {
-  constructor(private uploadRepository: UploadRepository) {}
+  constructor(
+    private uploadRepository: UploadRepository,
+    private resultService: ResultService,
+  ) {}
 
   getHash(data: Buffer) {
     const hash = createHash('sha256');
@@ -62,7 +65,8 @@ export class UploadService {
       await fs.unlinkSync(filePath);
       if (!fileInfo) {
         this.uploadRepository.insertFile(hash);
-        this.fileTransfer(hash, fileSize, data); //파일 전송
+        this.resultService.createDocument(hash);
+        //this.fileTransfer(hash, fileSize, data); //파일 전송
         return hash;
       } else {
         this.uploadRepository.updateCheckTime(fileInfo);

@@ -16,4 +16,9 @@ export class ResultService {
     }
     return find;
   }
+
+  createDocument(hash: string) {
+    const create = new this.resultModel({ hash, progress: 0 });
+    create.save();
+  }
 }

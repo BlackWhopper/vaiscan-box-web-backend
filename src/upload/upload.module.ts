@@ -1,3 +1,4 @@
+import { ResultService } from './../result/result.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CheckFile } from './check_file.entity';
@@ -6,7 +7,7 @@ import { UploadRepository } from './upload.repository';
 import { UploadService } from './upload.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CheckFile])],
+  imports: [TypeOrmModule.forFeature([CheckFile]), ResultService],
   exports: [UploadService],
   controllers: [UploadController],
   providers: [UploadService, UploadRepository],
