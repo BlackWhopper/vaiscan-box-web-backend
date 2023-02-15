@@ -18,7 +18,7 @@ export class ResultService {
   }
 
   createDocument(hash: string) {
-    const create = new this.resultModel({ hash, progress: 0 });
+    const create = new this.resultModel({ hash, progress: 0, risk: null });
     create.save();
   }
 }
