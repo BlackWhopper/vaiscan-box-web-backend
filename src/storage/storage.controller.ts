@@ -58,7 +58,7 @@ export class StorageController {
     form.parse(req, async (err, fields, files) => {
       if (err) throw err;
       const path: any = fields.path;
-      const isCover: any = fields.cover;
+      const isCover: any = fields.cover === 'true';
 
       for (const file in files) {
         await this.storageService.uploadFileInStorage(

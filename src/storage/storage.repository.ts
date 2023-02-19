@@ -10,7 +10,7 @@ export class StorageRepository extends Repository<Storage> {
   uploadFile(
     uId: number,
     fileName: string,
-    file: Object,
+    file: any,
     path: string,
     hash: string,
   ) {
