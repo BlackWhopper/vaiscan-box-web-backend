@@ -51,7 +51,7 @@ export class StorageController {
   @Post('upload')
   @UseInterceptors(
     FilesInterceptor('files', null, {
-      dest: 'uploads',
+      dest: 'temp',
     }),
   )
   async uploadFileInStorage(

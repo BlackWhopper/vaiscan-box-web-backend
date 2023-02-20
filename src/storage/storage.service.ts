@@ -63,6 +63,7 @@ export class StorageService {
       if (isCover) {
         await this.deletFileInStorage(uId, userName, find.storage_id);
       } else {
+        await fs.unlinkSync(filePath);
         return;
       }
     }

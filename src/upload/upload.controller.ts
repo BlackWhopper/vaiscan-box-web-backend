@@ -10,7 +10,7 @@ export class UploadController {
   @Post()
   @UseInterceptors(
     FilesInterceptor('files', null, {
-      dest: 'uploads',
+      dest: 'temp',
     }),
   )
   async uploadFile(
