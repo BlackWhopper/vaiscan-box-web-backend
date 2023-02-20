@@ -47,20 +47,18 @@ export class StorageService {
   async uploadFileInStorage(
     uId: number,
     userName: string,
-    file: any,
+    file: Express.Multer.File,
     path: string,
     isCover: boolean,
   ): Promise<void> {
-    const originalName = file['originalFilename'];
-    const filePath = file['filepath'];
+    const originalName = file.originalname;
+    const filePath = file.path;
     const data = fs.readFileSync(filePath);
-
     const find = await this.storageRepository.findOneBy({
       user_id: uId,
       path,
       original_name: originalName,
     });
-
     if (find && find.file_type != 'dir') {
       if (isCover) {
         await this.deletFileInStorage(uId, userName, find.storage_id);

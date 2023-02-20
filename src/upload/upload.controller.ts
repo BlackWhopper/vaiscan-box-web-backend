@@ -1,28 +1,28 @@
 import { UploadService } from './upload.service';
 import { Controller, Post } from '@nestjs/common';
-import * as formidable from 'formidable';
-import { Req } from '@nestjs/common/decorators';
+import { Req, UploadedFiles, UseInterceptors } from '@nestjs/common/decorators';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   @Post()
-  async uploadFile(@Req() req) {
+  @UseInterceptors(
+    FilesInterceptor('files', null, {
+      dest: 'uploads',
+    }),
+  )
+  async uploadFile(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Req() req,
+  ) {
     const hashes = [];
-    const form = formidable({
-      multiples: true,
-      uploadDir: `${__dirname}/../../uploads`,
-    });
-
     try {
-      form.parse(req, async (err, fields, files) => {
-        if (err) throw err;
-        for (const file in files) {
-          hashes.push(await this.uploadService.uploadFile(files[file]));
-        }
-        return hashes;
-      });
+      for (const file of files) {
+        hashes.push(await this.uploadService.uploadFile(file));
+      }
+      return hashes;
     } catch (err) {
       throw err;
     }

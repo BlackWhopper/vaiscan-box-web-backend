@@ -54,9 +54,9 @@ export class UploadService {
     }
   }
 
-  async uploadFile(file: any): Promise<string> {
-    const filePath = file['filepath'];
-    const fileSize = file['size'];
+  async uploadFile(file: Express.Multer.File): Promise<string> {
+    const filePath = file.path;
+    const fileSize = file.size;
     const data = fs.readFileSync(filePath);
     const hash = this.getHash(data);
 
