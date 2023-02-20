@@ -29,6 +29,13 @@ export class StorageService {
     return await this.storageRepository.findBy({ user_id: uId, path });
   }
 
+  async getDirList(uId: number): Promise<Storage[]> {
+    return await this.storageRepository.findBy({
+      user_id: uId,
+      file_type: 'dir',
+    });
+  }
+
   async createDirectory(
     uId: number,
     dirName: string,

@@ -32,6 +32,12 @@ export class StorageController {
     return this.storageService.getFileList(uId, path);
   }
 
+  @Get('dir')
+  getDirList(@Req() req) {
+    const uId = req.user.user_id;
+    return this.storageService.getDirList(uId);
+  }
+
   @Post('create')
   async createDirectory(
     @Req() req,
