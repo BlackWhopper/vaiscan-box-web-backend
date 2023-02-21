@@ -1,4 +1,4 @@
-import { Injectable, Put } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Storage } from './storage.entity';
 @Injectable()
@@ -7,7 +7,7 @@ export class StorageRepository extends Repository<Storage> {
     super(Storage, dataSource.createEntityManager());
   }
 
-  uploadFile(
+  async uploadFile(
     uId: number,
     fileName: string,
     file: Express.Multer.File,
@@ -24,7 +24,7 @@ export class StorageRepository extends Repository<Storage> {
       user_id: uId,
     });
 
-    this.save(savedFile);
+    await this.save(savedFile);
   }
 
   async createDirectory(uId: number, dirName: string, path: string) {
