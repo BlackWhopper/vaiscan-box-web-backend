@@ -66,7 +66,7 @@ export class UploadService {
       if (!fileInfo) {
         this.uploadRepository.insertFile(hash);
         this.resultService.createDocument(hash);
-        //this.fileTransfer(hash, fileSize, data); //파일 전송
+        this.fileTransfer(hash, fileSize, data); //파일 전송
         return hash;
       } else {
         this.uploadRepository.updateCheckTime(fileInfo);

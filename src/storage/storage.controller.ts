@@ -75,6 +75,9 @@ export class StorageController {
     const path = body.path;
     const isCover = body.cover;
     for (const file of files) {
+      file.originalname = Buffer.from(file.originalname, 'latin1').toString(
+        'utf8',
+      );
       await this.storageService.uploadFileInStorage(
         uId,
         userName,

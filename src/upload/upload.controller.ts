@@ -13,13 +13,13 @@ export class UploadController {
       dest: 'temp',
     }),
   )
-  async uploadFile(
-    @UploadedFiles() files: Array<Express.Multer.File>,
-    @Req() req,
-  ) {
+  async uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
     const hashes = [];
     try {
       for (const file of files) {
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString(
+          'utf8',
+        );
         hashes.push(await this.uploadService.uploadFile(file));
       }
       return hashes;

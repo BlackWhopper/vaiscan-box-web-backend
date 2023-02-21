@@ -20,4 +20,4 @@ session:
   secret: 'Blackwhopper'
 
 ai:
-  host: 'ws://192.168.219.127:8282'
+  host: 'ws://192.168.123.103:8282'
