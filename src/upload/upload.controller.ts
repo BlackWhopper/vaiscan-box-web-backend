@@ -1,7 +1,7 @@
 import { UploadService } from './upload.service';
 import { Controller, Post } from '@nestjs/common';
-import { Req, UploadedFiles, UseInterceptors } from '@nestjs/common/decorators';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { UploadedFile, UseInterceptors } from '@nestjs/common/decorators';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('upload')
 export class UploadController {
@@ -9,20 +9,16 @@ export class UploadController {
 
   @Post()
   @UseInterceptors(
-    FilesInterceptor('files', null, {
+    FileInterceptor('file', {
       dest: 'temp',
     }),
   )
-  async uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
-    const hashes = [];
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
     try {
-      for (const file of files) {
-        file.originalname = Buffer.from(file.originalname, 'latin1').toString(
-          'utf8',
-        );
-        hashes.push(await this.uploadService.uploadFile(file));
-      }
-      return hashes;
+      file.originalname = Buffer.from(file.originalname, 'latin1').toString(
+        'utf8',
+      );
+      return await this.uploadService.uploadFile(file);
     } catch (err) {
       throw err;
     }
