@@ -18,7 +18,12 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import * as fs from 'fs';
-import { CreateDirDto, StorageIdDto, MoveFileDto } from './dto/storage.dto';
+import {
+  CreateDirDto,
+  StorageIdDto,
+  MoveFileDto,
+  MultipleStorageIdDto,
+} from './dto/storage.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('storage')
@@ -128,20 +133,17 @@ export class StorageController {
   @HttpCode(204)
   async deleteFileInStorage(
     @Req() req,
-    @Body(ValidationPipe) storageIdDto: StorageIdDto,
+    @Body(ValidationPipe) multipleStorageIdDto: MultipleStorageIdDto,
   ) {
     const uId = req.user.user_id;
     const userName = req.user.username;
-    const storageId = storageIdDto.storage_id;
-
-    try {
-      return await this.storageService.deletFileInStorage(
-        uId,
-        userName,
-        storageId,
-      );
-    } catch (err) {
-      throw err;
+    for (const storageId of multipleStorageIdDto.storage_id) {
+      try {
+        await this.storageService.deletFileInStorage(uId, userName, storageId);
+      } catch (err) {
+        throw err;
+      }
     }
+    return;
   }
 }

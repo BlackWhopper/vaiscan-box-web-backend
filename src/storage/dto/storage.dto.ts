@@ -1,9 +1,14 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class StorageIdDto {
   @IsNumber()
   @IsNotEmpty()
   storage_id: number;
+}
+export class MultipleStorageIdDto {
+  @IsArray()
+  @IsNotEmpty()
+  storage_id: number[];
 }
 
 export class MoveFileDto extends StorageIdDto {

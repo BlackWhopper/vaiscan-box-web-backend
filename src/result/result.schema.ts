@@ -9,6 +9,9 @@ export class Result {
   hash: string;
 
   @Prop()
+  type: string;
+
+  @Prop()
   progress: number;
 
   @Prop()
