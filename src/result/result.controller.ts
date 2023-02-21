@@ -7,7 +7,6 @@ export class ResultController {
 
   @Get(':hash')
   async getResult(@Param('hash') hash: string) {
-    console.log(hash);
     return await this.resultService.getResult(hash);
   }
 }
