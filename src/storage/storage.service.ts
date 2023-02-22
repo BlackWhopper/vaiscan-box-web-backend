@@ -1,3 +1,4 @@
+import { ResultService } from './../result/result.service';
 import { AwsService } from './../aws/aws.service';
 import { UploadService } from './../upload/upload.service';
 import { StorageRepository } from './storage.repository';
@@ -15,6 +16,7 @@ export class StorageService {
     private storageRepository: StorageRepository,
     private uploadService: UploadService,
     private awsService: AwsService,
+    private resultService: ResultService,
   ) {}
 
   encryptPath(plainPath: string) {
@@ -77,8 +79,33 @@ export class StorageService {
     const random = Math.floor(Math.random() * (999999 - 100001) + 100000);
     const fileName = `${Date.now()}-${random}`;
     const hash = await this.uploadService.uploadFile(file);
-    await this.storageRepository.uploadFile(uId, fileName, file, path, hash);
+    const uploadFile = await this.storageRepository.uploadFile(
+      uId,
+      fileName,
+      file,
+      path,
+      hash,
+    );
     this.awsService.uploadS3(fileName, userName, data);
+
+    const intId = setInterval(() => {
+      this.resultService.getResult(hash).then((res) => {
+        if (res.progress === -1 || res.progress >= 100) {
+          clearInterval(intId);
+          if (res.progress === -1)
+            this.storageRepository.updateStatus(uploadFile, 5);
+          if (res.progress >= 100) {
+            if (res.risk <= 10)
+              this.storageRepository.updateStatus(uploadFile, 1);
+            else if (res.risk > 10 && res.risk <= 30)
+              this.storageRepository.updateStatus(uploadFile, 2);
+            else if (res.risk > 30 && res.risk <= 50)
+              this.storageRepository.updateStatus(uploadFile, 3);
+            else this.storageRepository.updateStatus(uploadFile, 4);
+          }
+        }
+      });
+    }, 1000);
   }
 
   async download(user_id: number, userName: string, storage_id: number) {

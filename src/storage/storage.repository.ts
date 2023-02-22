@@ -24,7 +24,7 @@ export class StorageRepository extends Repository<Storage> {
       user_id: uId,
     });
 
-    await this.save(savedFile);
+    return await this.save(savedFile);
   }
 
   async createDirectory(uId: number, dirName: string, path: string) {
@@ -40,5 +40,10 @@ export class StorageRepository extends Repository<Storage> {
   async updatePath(storage: Storage, path: string) {
     storage.path = path;
     await this.save(storage);
+  }
+
+  updateStatus(storage: Storage, status: number) {
+    storage.status = status;
+    this.save(storage);
   }
 }

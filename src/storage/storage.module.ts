@@ -1,3 +1,4 @@
+import { ResultModule } from './../result/result.module';
 import { AwsModule } from './../aws/aws.module';
 import { AuthModule } from './../auth/auth.module';
 import { UploadModule } from './../upload/upload.module';
@@ -14,6 +15,7 @@ import { Storage } from './storage.entity';
     UploadModule,
     AuthModule,
     AwsModule,
+    ResultModule,
   ],
   exports: [StorageService, StorageRepository],
   controllers: [StorageController],
