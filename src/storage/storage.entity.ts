@@ -24,7 +24,7 @@ export class Storage {
   upload_time: string;
 
   @Column('tinyint', { default: 0 })
-  static_status: number;
+  status: number;
 
   @Column({ nullable: true })
   hash: string;

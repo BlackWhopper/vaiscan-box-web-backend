@@ -21,7 +21,7 @@ export class UploadService {
     return hashSum;
   }
 
-  fileTransfer(hash: string, fileSize: number, data: Buffer) {
+  fileTransfer(hash: string, fileName: string, fileSize: number, data: Buffer) {
     const ws = new WebSocket(config.get('ai.host'));
     const bufferSize = 10485760;
     let pos = 0;
@@ -36,6 +36,8 @@ export class UploadService {
 
         if (msg.data === 'HASH') {
           ws.send(hash);
+        } else if (msg.data === 'FILENAME') {
+          ws.send(fileName);
         } else if (msg.data === 'FILESIZE') {
           ws.send(fileSize);
         } else if (msg.data === 'DATA') {
@@ -57,6 +59,7 @@ export class UploadService {
   async uploadFile(file: Express.Multer.File): Promise<string> {
     const filePath = file.path;
     const fileSize = file.size;
+    const fileName = file.originalname;
     const data = fs.readFileSync(filePath);
     const hash = this.getHash(data);
 
@@ -66,7 +69,7 @@ export class UploadService {
       if (!fileInfo) {
         this.uploadRepository.insertFile(hash);
         this.resultService.createDocument(hash);
-        //this.fileTransfer(hash, fileSize, data); //파일 전송
+        this.fileTransfer(hash, fileName, fileSize, data); //파일 전송
         return hash;
       } else {
         this.uploadRepository.updateCheckTime(fileInfo);

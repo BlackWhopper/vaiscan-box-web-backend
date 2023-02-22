@@ -9,6 +9,12 @@ export class Result {
   hash: string;
 
   @Prop()
+  file_name: string;
+
+  @Prop()
+  size: number;
+
+  @Prop()
   type: string;
 
   @Prop()
