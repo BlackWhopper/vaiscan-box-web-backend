@@ -1,23 +1,23 @@
 mariadb:
-  host: '13.125.230.113'
-  username: 'blackwhopper'
-  password: 'qjrjzld@'
+  host: ''
+  username: ''
+  password: ''
   synchronize: true
 
 mongodb:
-  host: 'mongodb://13.125.230.113:27017/vaiscan'
+  host: 'mongodb://'
 
 jwt:
   secret: 'Blackwhopper'
 
 aws:
-  bucket: 'vaiscanbox'
-  region: 'ap-northeast-2'
-  acessKey: 'AKIAZELXFW3RSRU53Y7T'
-  secretAccessKey: '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'
+  bucket: ''
+  region: ''
+  acessKey: ''
+  secretAccessKey: ''
 
 session:
   secret: 'Blackwhopper'
 
 ai:
-  host: 'ws://172.20.10.13:8282'
+  host: 'ws://'
